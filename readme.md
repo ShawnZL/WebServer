@@ -2,6 +2,8 @@
 
 理解epoll原理，因为epoll是在Linux上的实现方式，在Mac os上使用了全新的方式kqueue，所以尝试多写一个kqueue的控制方式
 
+[文档📄](https://github.com/ShawnZL/Socket_Learning/blob/master/TCP_Reading.md)
+
 ## 运行方法
 
 ```shell
@@ -67,3 +69,4 @@ fcntl(fd, F_SETFL, flag|O_NONBLOCK);
 ```
 
 **可以分离接收数据和处理数据的时间点!**
+
