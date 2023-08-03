@@ -9,7 +9,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #define BUF_SIZE 1024
-void error_handling(char *message);./
+void error_handling(char *message);
 
 int main(int argc, char* argv[]) {
     int sock;
@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
         if (!strcmp(message, "q\n") || !strcmp(message, "Q\n"))
             break;
         write(sock, message, strlen(message));
+        str_len = strlen(message);
         recv_len = 0;
         while (recv_len < str_len) {
             recv_cnt = read(sock, &message[recv_len], BUF_SIZE - 1);

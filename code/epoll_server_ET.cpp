@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     ep_events = malloc(sizeof(struct epoll_event)*EPOLL_SIZE);
 
     setnonblockingmode(serv_sock);
-    event.events = EPOLLIN;//发生需要读取数据情况 LT 常规模式
+    event.events = EPOLLIN;//发生需要读取数据情况
     event.data.fd=serv_sock;
     epoll_ctl(epfd, EPOLL_CTL_ADD, serv_sock, &event);
 
@@ -53,7 +53,6 @@ int main(int argc, char *argv[]) {
             puts("epoll_wait() error");
             break;
         }
-        puts("return epoll_wait");
         for (i = 0; i < event_cnt; ++i) { //大于等于1时执行循环，查找发生状态变化的文件描述符
             if (ep_events[i].data.fd==serv_sock) { //当前serv_sock进程
                 adr_sz=sizeof(clnt_adr);

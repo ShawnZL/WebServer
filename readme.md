@@ -9,6 +9,7 @@
 ```shell
 gcc server.c -o serv
 ./serv 9190
+./cli 127.0.0.1 9190
 ```
 
 # epoll
@@ -69,4 +70,104 @@ fcntl(fd, F_SETFL, flag|O_NONBLOCK);
 ```
 
 **可以分离接收数据和处理数据的时间点!**
+
+## 条件触发和边缘触发孰优孰劣
+
+#### 条件触发
+
+只要输入缓冲有数据就会一直触发事件，直到缓冲区没有数据。
+
+```c
+#include <unistd.h>
+#include <stdio.h>
+#include <sys/epoll.h>
+int main() {
+    int epfd, nfds;
+    char buf[256];
+    struct epoll_event event, events[5];
+    epfd=epoll_create(1);
+    event.data.fd = STDIN_FILENO;
+    event.events = EPOLLIN; //LT默认模式
+    epoll_ctl(epfd,EPOLL_CTL_ADD,STDIN_FILENO, &event);
+    while (1) {
+        nfds = epoll_wait(epfd, events, 5, -1);
+        int i;
+        for (i = 0; i < nfds; ++i) {
+            if (events[i].data.fd == STDIN_FILENO);
+            //read(STDIN_FILENO, buf, sizeof(buf));
+            printf("hello world\n");
+        }
+    }
+    return 0;
+}
+```
+
+
+
+使用键盘输入字符串的时候，字符串会输入到STDIN_FILENO文件描述符中亦或是在其缓冲中，但是此时没有read函数将其读出，所以就一直存储在缓冲中，因此会一直有条件触发。
+
+#### 边缘触发
+
+```c 
+#include <unistd.h>
+#include <stdio.h>
+#include <sys/epoll.h>
+ 
+int main(int argc, char *argv[])
+{
+    int epfd, nfds;
+    char buf[256];
+    struct epoll_event event, events[5];
+    epfd = epoll_create(1);
+    event.data.fd = STDIN_FILENO;
+    event.events = EPOLLIN | EPOLLET;  // 加入EPOLLET即可变为边缘模式
+    epoll_ctl(epfd, EPOLL_CTL_ADD, STDIN_FILENO, &event);
+
+    while (1) {
+        nfds = epoll_wait(epfd, events, 5, -1); // 
+        int i;
+        for (i = 0; i < nfds; ++i) {
+            if (events[i].data.fd == STDIN_FILENO) {
+                //read(STDIN_FILENO, buf, sizeof(buf));
+                printf("hello world\n");
+            }
+        }
+    }
+    return 0;
+}
+```
+
+# kqueue
+
+原理同epoll，但是因为epoll为Linux专属，Mac上使用的kqueue，所以将epoll里面的事件注册机制更换为kqueue进行处理。简单解释，Kqueue是unix系统上高效的IO多路复用技术（常见的io复用有select、poll、epoll、kqueue等等，其中epoll为Linux系统独有，kqueue则在众多unix系统中存在）。
+
+kqueue与epoll非常相似，在注册一批文件描述符到 kqueue 以后，当其中的描述符状态发生变化时，kqueue将一次性通知应用程序哪些描述符可读、可写或出错了（即产生事件Event）。
+**kqueue 支持的event很多，文件句柄事件，信号，异步io事件，子进程状态事件，支持微秒的计时器事件等。**
+
+```c
+struct kevent
+{
+uintptr_t  ident;   /* identifier for this event */ 事件标识
+short  filter;     /* filter for event */ 监听事件的类型，如EVFILT_READ，EVFILT_WRITE，EVFILT_TIMER等
+u_short  flags;   /* action flags for kqueue */事件操作类型，如EV_ADD，EV_ENABLE，EV_DELETE等
+u_int  fflags;       /* filter flag value */
+intptr_t  data;      /* filter data value */
+void  *udata;       /* opaque user data identifier */可携带的任意用户数据
+};
+
+// 初始化kqueue
+int kq = kqueue(); // kqueue对象
+struct kevent events_changes[KQUEUE_SIZE]; // kevent 返回监听结果
+// kevent(ident, filter, flags, fflags, data, udata) 一次只能监听一个事情
+struct kevent event;
+
+// 检测标准输入流STDIN
+EV_SET(&event, STDIN_FILENO, EVFILT_READ, EV_ADD, 0, 0, NULL);
+kevent(kq, &event, 1, NULL, 0, NULL);
+
+// 当serv_sock有数据可以读的时候，kqueue会触发
+EV_SET(&event, serv_sock, EVFILT_READ, EV_ADD, 0, 0, NULL);
+// pass data to kqueue
+kevent(kq, &event, 1, NULL, 0, NULL);
+```
 

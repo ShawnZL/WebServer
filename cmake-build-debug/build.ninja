@@ -72,14 +72,8 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 
 build cmake_object_order_depends_target_WebServer: phony || CMakeFiles/WebServer.dir
 
-build CMakeFiles/WebServer.dir/code/epoll_server.cpp.o: CXX_COMPILER__WebServer_Debug /Users/shawnzhao/Code/CPlus_Learning/WebServer/code/epoll_server.cpp || cmake_object_order_depends_target_WebServer
-  DEP_FILE = CMakeFiles/WebServer.dir/code/epoll_server.cpp.o.d
-  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -std=gnu++2a
-  OBJECT_DIR = CMakeFiles/WebServer.dir
-  OBJECT_FILE_DIR = CMakeFiles/WebServer.dir/code
-
-build CMakeFiles/WebServer.dir/code/kqueue_server.cpp.o: CXX_COMPILER__WebServer_Debug /Users/shawnzhao/Code/CPlus_Learning/WebServer/code/kqueue_server.cpp || cmake_object_order_depends_target_WebServer
-  DEP_FILE = CMakeFiles/WebServer.dir/code/kqueue_server.cpp.o.d
+build CMakeFiles/WebServer.dir/code/epoll_server_ET.cpp.o: CXX_COMPILER__WebServer_Debug /Users/shawnzhao/Code/CPlus_Learning/WebServer/code/epoll_server_ET.cpp || cmake_object_order_depends_target_WebServer
+  DEP_FILE = CMakeFiles/WebServer.dir/code/epoll_server_ET.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -std=gnu++2a
   OBJECT_DIR = CMakeFiles/WebServer.dir
   OBJECT_FILE_DIR = CMakeFiles/WebServer.dir/code
@@ -96,6 +90,18 @@ build CMakeFiles/WebServer.dir/code/selectserver.cpp.o: CXX_COMPILER__WebServer_
   OBJECT_DIR = CMakeFiles/WebServer.dir
   OBJECT_FILE_DIR = CMakeFiles/WebServer.dir/code
 
+build CMakeFiles/WebServer.dir/code/epoll_server_LT.cpp.o: CXX_COMPILER__WebServer_Debug /Users/shawnzhao/Code/CPlus_Learning/WebServer/code/epoll_server_LT.cpp || cmake_object_order_depends_target_WebServer
+  DEP_FILE = CMakeFiles/WebServer.dir/code/epoll_server_LT.cpp.o.d
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -std=gnu++2a
+  OBJECT_DIR = CMakeFiles/WebServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/WebServer.dir/code
+
+build CMakeFiles/WebServer.dir/code/kqueueServer.cpp.o: CXX_COMPILER__WebServer_Debug /Users/shawnzhao/Code/CPlus_Learning/WebServer/code/kqueueServer.cpp || cmake_object_order_depends_target_WebServer
+  DEP_FILE = CMakeFiles/WebServer.dir/code/kqueueServer.cpp.o.d
+  FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -std=gnu++2a
+  OBJECT_DIR = CMakeFiles/WebServer.dir
+  OBJECT_FILE_DIR = CMakeFiles/WebServer.dir/code
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target WebServer
@@ -104,7 +110,7 @@ build CMakeFiles/WebServer.dir/code/selectserver.cpp.o: CXX_COMPILER__WebServer_
 #############################################
 # Link the executable WebServer
 
-build WebServer: CXX_EXECUTABLE_LINKER__WebServer_Debug CMakeFiles/WebServer.dir/code/epoll_server.cpp.o CMakeFiles/WebServer.dir/code/kqueue_server.cpp.o CMakeFiles/WebServer.dir/code/client.cpp.o CMakeFiles/WebServer.dir/code/selectserver.cpp.o
+build WebServer: CXX_EXECUTABLE_LINKER__WebServer_Debug CMakeFiles/WebServer.dir/code/epoll_server_ET.cpp.o CMakeFiles/WebServer.dir/code/client.cpp.o CMakeFiles/WebServer.dir/code/selectserver.cpp.o CMakeFiles/WebServer.dir/code/epoll_server_LT.cpp.o CMakeFiles/WebServer.dir/code/kqueueServer.cpp.o
   FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk
   OBJECT_DIR = CMakeFiles/WebServer.dir
   POST_BUILD = :
